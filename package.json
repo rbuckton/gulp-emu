@@ -1,0 +1,57 @@
+{
+  "name": "gulp-emu",
+  "version": "1.0.0",
+  "description": "Gulp plugin for ecmarkup",
+  "main": "out/index.js",
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbuckton/gulp-emu.git"
+  },
+  "keywords": [
+    "gulp",
+    "plugin",
+    "ecmarkup",
+    "emu"
+  ],
+  "author": "Ron Buckton <rbuckton@chronicles.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/rbuckton/gulp-emu/issues"
+  },
+  "homepage": "https://github.com/rbuckton/gulp-emu#readme",
+  "devDependencies": {
+    "@types/chai": "^3.4.28",
+    "@types/gulp": "^3.8.28",
+    "@types/gulp-util": "^3.0.28",
+    "@types/mocha": "^2.2.27",
+    "@types/vinyl": "^1.1.27",
+    "@types/vinyl-fs": "0.0.27",
+    "chai": "^3.5.0",
+    "chai-baseline": "^1.0.0",
+    "del": "^2.2.1",
+    "ecmarkup": "^3.2.6",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "mocha": "^2.5.3",
+    "typescript": "^2.1.0-dev.20160715",
+    "vinyl": "^1.1.1",
+    "vinyl-fs": "^2.4.3"
+  },
+  "dependencies": {
+    "prex": "^0.2.0"
+  },
+  "peerDependencies": {
+    "gulp": "^3",
+    "gulp-util": "^3",
+    "ecmarkup": "^3"
+  },
+  "engines": {
+    "node": ">=4"
+  }
+}
