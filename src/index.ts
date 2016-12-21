@@ -17,7 +17,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as gutil from "gulp-util";
-import { build, BuildOptions } from "ecmarkup";
+import { build, Options as BuildOptions } from "ecmarkup";
 import { Transform } from "stream";
 import { AsyncQueue, CountdownEvent } from "prex";
 import Vinyl = require("vinyl");
@@ -28,20 +28,26 @@ function ecmarkup(opts?: ecmarkup.Options): NodeJS.ReadWriteStream {
 
 namespace ecmarkup {
     export interface Options extends BuildOptions {
-        js?: boolean;
-        css?: boolean;
+        js?: boolean | string;
+        css?: boolean | string;
         biblio?: boolean;
     }
 
     export class EcmarkupTransform extends Transform {
-        private _opts: Options;
+        private _opts: Pick<Options, "js" | "css" | "biblio">;
+        private _emuOpts: Options;
         private _queue = new AsyncQueue<Vinyl[]>();
         private _countdown = new CountdownEvent(1);
-        private _cache: { [path: string]: string; } = Object.create(null);
+        private _cache = new Map<string, string>();
 
-        constructor(opts?: Options) {
+        constructor(opts: Options = {}) {
             super({ objectMode: true });
-            this._opts = opts || {};
+            this._opts = {
+                js: pluck(opts, "js"),
+                css: pluck(opts, "css"),
+                biblio: pluck(opts, "biblio")
+            };
+            this._emuOpts = opts;
             this._waitForWrite();
         }
 
@@ -55,63 +61,48 @@ namespace ecmarkup {
             }
 
             // cache the file contents
-            this._cache[file.path] = file.contents.toString("utf8");
+            this._cache.set(file.path, (<Buffer>file.contents).toString("utf8"));
 
             // put an entry into the queue for the transformation
-            this._enqueue(build(file.path, path => this._readFile(path), this._opts).then(spec => {
-                const files: Vinyl[] = [];
-                if (spec) {
-                    if (this._opts.biblio) {
-                        const dirname = path.dirname(file.path);
-                        const extname = path.extname(file.path);
-                        const basename = path.basename(file.path, extname);
-                        const biblio = new Vinyl({
-                            path: path.join(dirname, basename + ".biblio.json"),
-                            base: file.base,
-                            contents: new Buffer(JSON.stringify(spec.exportBiblio()), "utf8")
-                        });
-                        files.push(biblio);
-                    }
-
-                    const html = spec.toHTML();
-                    file.contents = new Buffer(html, "utf8");
-                    files.push(file);
-                }
-
-                return files;
-            }));
+            this._enqueue(this._buildAsync(file));
 
             cb();
         }
 
         _flush(cb: () => void) {
-            const files: string[] = [];
+            const files: { src: string[], dest: string }[] = [];
 
-            if (this._opts.css) {
-                files.push(require.resolve("ecmarkup/css/elements.css"));
+            const css = this._opts.css;
+            if (css) {
+                const dest = typeof css === "string" ? css : "elements.css";
+                files.push({ src: [require.resolve("ecmarkup/css/elements.css")], dest });
             }
 
-            if (this._opts.js) {
-                files.push(require.resolve("ecmarkup/js/menu.js"));
-                files.push(require.resolve("ecmarkup/js/findLocalReferences.js"));
+            const js = this._opts.js;
+            if (js) {
+                if (typeof js === "string") {
+                    files.push({
+                        src: [
+                            require.resolve("ecmarkup/js/menu.js"),
+                            require.resolve("ecmarkup/js/findLocalReferences.js")
+                        ],
+                        dest: js
+                    });
+                }
+                else {
+                    files.push({ src: [require.resolve("ecmarkup/js/menu.js")], dest: "menu.js" });
+                    files.push({ src: [require.resolve("ecmarkup/js/findLocalReferences.js")], dest: "findLocalReferences.js" });
+                }
             }
 
             if (files.length) {
-                this._enqueueFiles(files);
+                this._enqueue(this._readFilesAsync(files));
             }
 
             this._countdown.signal();
             this._countdown.wait()
                 .then(() => cb())
                 .catch(e => this.emit("error", e));
-        }
-
-        private _enqueueFiles(files: string[]) {
-            this._enqueue(Promise.all(files.map(file => this._readFile(file))).then(filesContents => filesContents.map((contents, i) => new Vinyl({
-                path: files[i],
-                base: path.dirname(files[i]),
-                contents: new Buffer(contents, "utf8")
-            }))));
         }
 
         private _enqueue(promise: PromiseLike<Vinyl[]>) {
@@ -131,11 +122,50 @@ namespace ecmarkup {
             this._queue.get().then(file => this._finishWrite(file), e => this.emit("error", e));
         }
 
-        private _readFile(path: string): PromiseLike<string> {
-            return this._cache[path]
-                ? Promise.resolve(this._cache[path])
-                : readFile(path, "utf8")
-                    .then(contents => this._cache[path] = contents);
+        private async _buildAsync(file: Vinyl) {
+            const files: Vinyl[] = [];
+            const spec = await build(file.path, path => this._readFileAsync(path), this._emuOpts);
+            if (spec) {
+                if (this._opts.biblio) {
+                    const dirname = path.dirname(file.path);
+                    const extname = path.extname(file.path);
+                    const basename = path.basename(file.path, extname);
+                    const biblio = new Vinyl({
+                        path: path.join(dirname, basename + ".biblio.json"),
+                        base: file.base,
+                        contents: new Buffer(JSON.stringify(spec.exportBiblio()), "utf8")
+                    });
+                    files.push(biblio);
+                }
+                const html = spec.toHTML();
+                file.contents = new Buffer(html, "utf8");
+                files.push(file);
+            }
+            return files;
+        }
+
+        private async _readFilesAsync(files: { src: string[], dest: string }[]) {
+            return await Promise.all(files.map(file => this._mergeFilesAsync(file)));
+        }
+
+        private async _mergeFilesAsync(file: { src: string[], dest: string }) {
+            const srcContents = await Promise.all(file.src.map(src => this._readFileAsync(src)));
+            const contents = srcContents.join("");
+            const base = path.dirname(file.src[0]);
+            return new Vinyl({
+                path: path.join(base, file.dest),
+                base,
+                contents: new Buffer(contents, "utf8")
+            });
+        }
+
+        private async _readFileAsync(path: string) {
+            let contents = this._cache.get(path);
+            if (!contents) {
+                contents = await readFile(path, "utf8");
+                this._cache.set(path, contents);
+            }
+            return contents;
         }
     }
 }
@@ -144,6 +174,12 @@ function readFile(file: string, encoding: string) {
     return new Promise<string>((resolve, reject) => {
         fs.readFile(file, encoding, (err, data) => err ? reject(err) : resolve(data));
     });
+}
+
+function pluck<T, K extends keyof T>(obj: T, key: K) {
+    const value = obj[key];
+    delete obj[key];
+    return value;
 }
 
 export = ecmarkup;

@@ -1,6 +1,6 @@
 {
   "name": "gulp-emu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Gulp plugin for ecmarkup",
   "main": "out/index.js",
   "typings": "out/index.d.ts",
@@ -34,13 +34,14 @@
     "chai": "^3.5.0",
     "chai-baseline": "^1.0.0",
     "del": "^2.2.1",
-    "ecmarkup": "^3.2.6",
+    "ecmarkup": "^3.9.3",
     "gulp": "^3.9.1",
+    "gulp-tsb": "git://github.com/rbuckton/gulp-tsb.git#srcDestMethods",
     "gulp-mocha": "^2.2.0",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-sourcemaps": "^2.2.1",
     "gulp-util": "^3.0.7",
     "mocha": "^2.5.3",
-    "typescript": "^2.1.0-dev.20160715",
+    "typescript": "^2.1.4",
     "vinyl": "^1.1.1",
     "vinyl-fs": "^2.4.3"
   },
@@ -53,6 +54,6 @@
     "ecmarkup": "^3"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   }
 }
