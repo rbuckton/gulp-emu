@@ -16,10 +16,11 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as gutil from "gulp-util";
 import { build, Options as BuildOptions } from "ecmarkup";
 import { Transform } from "stream";
-import { AsyncQueue, CountdownEvent } from "prex";
+import { AsyncQueue } from "@esfx/async-queue";
+import { AsyncCountdownEvent } from "@esfx/async-countdown";
+import PluginError = require("plugin-error");
 import Vinyl = require("vinyl");
 
 function ecmarkup(opts?: ecmarkup.Options): NodeJS.ReadWriteStream {
@@ -37,7 +38,7 @@ namespace ecmarkup {
         private _opts: Pick<Options, "js" | "css" | "biblio">;
         private _emuOpts: Options;
         private _queue = new AsyncQueue<Vinyl[]>();
-        private _countdown = new CountdownEvent(1);
+        private _countdown = new AsyncCountdownEvent(1);
         private _cache = new Map<string, string>();
 
         constructor(opts: Options = {}) {
@@ -57,7 +58,7 @@ namespace ecmarkup {
             }
 
             if (file.isStream()) {
-                throw new gutil.PluginError("gulp-emu", "Stream not supported.");
+                throw new PluginError("gulp-emu", "Stream not supported.");
             }
 
             // cache the file contents
@@ -133,12 +134,12 @@ namespace ecmarkup {
                     const biblio = new Vinyl({
                         path: path.join(dirname, basename + ".biblio.json"),
                         base: file.base,
-                        contents: new Buffer(JSON.stringify(spec.exportBiblio()), "utf8")
+                        contents: Buffer.from(JSON.stringify(spec.exportBiblio()), "utf8")
                     });
                     files.push(biblio);
                 }
                 const html = spec.toHTML();
-                file.contents = new Buffer(html, "utf8");
+                file.contents = Buffer.from(html, "utf8");
                 files.push(file);
             }
             return files;
@@ -155,7 +156,7 @@ namespace ecmarkup {
             return new Vinyl({
                 path: path.join(base, file.dest),
                 base,
-                contents: new Buffer(contents, "utf8")
+                contents: Buffer.from(contents, "utf8")
             });
         }
 

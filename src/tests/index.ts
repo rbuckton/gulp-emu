@@ -30,7 +30,8 @@ describe("scenario", () => {
                         .replace(/(^|[\\/])\.\.($|[\\/])/g, "$1dotDot$2");
                     const relative = path.join(name, relativedir, basename);
                     files.push(path.normalize(path.join(relativedir, basename)));
-                    participants.push(assert.baseline(file.contents, path.join(name, relativedir, basename), { base: baselinesdir }));
+                    const contents = file.contents === null ? undefined : file.contents;
+                    participants.push(assert.baseline(contents, path.join(name, relativedir, basename), { base: baselinesdir }));
                 });
 
                 stream.on("error", done);
