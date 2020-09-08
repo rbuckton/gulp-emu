@@ -54,7 +54,6 @@
   },
   "peerDependencies": {
     "gulp": "^3 ^4",
-    "gulp-util": "^3",
     "ecmarkup": "^3 ^4"
   },
   "engines": {
