@@ -39,5 +39,5 @@ gulp.task("diff", () => {
     if (!difftool) {
         throw new Error("Add the 'DIFF' environment variable to the path of the program you want to use.");
     }
-    return exec(difftool, ["tests/baselines/reference", "tests/baselines/local"], { ignoreExitCode: true, waitForExit: false })
+    return exec(difftool, ["tests/baselines/reference", "tests/baselines/local"], { ignoreExitCode: true, waitForExit: false, verbose: true })
 });
