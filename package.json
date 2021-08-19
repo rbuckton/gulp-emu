@@ -25,36 +25,39 @@
   },
   "homepage": "https://github.com/rbuckton/gulp-emu#readme",
   "devDependencies": {
+    "@esfx/async-deferred": "^1.0.0-pre.19",
     "@esfx/cancelable": "^1.0.0-pre.13",
     "@types/chai": "^4.2.12",
     "@types/fancy-log": "^1.3.1",
-    "@types/gulp": "^4.0.6",
-    "@types/mocha": "^5.2.7",
-    "@types/plugin-error": "^0.1.1",
-    "@types/vinyl": "^2.0.4",
-    "@types/vinyl-fs": "^2.4.11",
-    "chai": "^4.2.0",
-    "chai-baseline": "^1.0.0",
-    "chalk": "^2.4.2",
+    "@types/gulp": "^4.0.9",
+    "@types/mocha": "^9.0.0",
+    "@types/plugin-error": "^1.0.0",
+    "@types/semver": "^7.3.8",
+    "@types/vinyl": "^2.0.5",
+    "@types/vinyl-fs": "^2.4.12",
+    "chai": "^4.3.4",
+    "chai-baseline": "^1.1.0",
+    "chalk": "^4.1.2",
     "del": "^5.1.0",
-    "ecmarkup": "^4.1.1",
+    "ecmarkup": "^8.1.0",
     "fancy-log": "^1.3.3",
     "gulp": "^4.0.2",
-    "gulp-mocha": "^7.0.2",
-    "gulp-sourcemaps": "^2.2.1",
-    "mocha": "^6.2.3",
-    "typescript": "^4.0.2",
-    "vinyl": "^2.2.0",
+    "gulp-mocha": "^8.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "mocha": "^9.0.3",
+    "typescript": "^4.3.5",
+    "vinyl": "^2.2.1",
     "vinyl-fs": "^3.0.3"
   },
   "dependencies": {
     "@esfx/async-countdown": "^1.0.0-pre.13",
     "@esfx/async-queue": "^1.0.0-pre.13",
-    "plugin-error": "^1.0.1"
+    "plugin-error": "^1.0.1",
+    "semver": "^7.3.5"
   },
   "peerDependencies": {
-    "gulp": "^3 || ^4",
-    "ecmarkup": "^3 || ^4"
+    "ecmarkup": "^3 || ^4 || ^7 || ^8",
+    "gulp": "^3 || ^4"
   },
   "engines": {
     "node": ">=6"

@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "lib": ["esnext", "dom"],
         "module": "commonjs",
         "strictNullChecks": true,
         "noImplicitAny": true,
         "declaration": true,
         "sourceMap": true,
+        "stripInternal": true,
         "types": ["node"],
         "rootDir": "src",
         "outDir": "out"

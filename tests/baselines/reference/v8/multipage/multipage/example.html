@@ -1,0 +1,16 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/base16/solarized-light.min.css"><link rel="stylesheet" href="../ecmarkup.css"><script src="../ecmarkup.js?cache=ILSqkFE4" defer=""></script><script src="multipage.js?cache=U5Wf8505" defer=""></script><link rel="canonical" href="../#sec-example"></head>
+<body><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle-none"></span><a href="./#sec-intro" title="Intro">Intro</a></li><li><span class="item-toggle-none"></span><a href="example.html#sec-example" title="Header"><span class="secnum">1</span> Header</a></li><li><span class="item-toggle-none"></span><a href="copyright-and-software-license.html#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div>
+<div id="menu-spacer"></div>
+<div id="menu-toggle">☰</div><div id='spec-container'><emu-clause id="sec-example">
+  <h1><span class="secnum">1</span> Header</h1>
+  <p>Can refer to eqns inside paragraph text via autolinking: DateValue.</p>
+  <emu-alg><ol><li>Return <emu-xref aoid="Value" id="_ref_0"><a href="example.html#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></emu-alg>
+  <emu-eqn aoid="Value2"><div>Value2(<var>t</var>)</div><div>    = DateValue(<var>t</var>) if <emu-xref aoid="Type" id="_ref_1"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>    = <var>t</var></div></emu-eqn>
+  <emu-eqn aoid="DateValue"><div>DateValue(<var>t</var>)</div><div>    = 0 if <var>t</var> = 0</div><div>    = 1 if <var>t</var> = 1</div><div>    = 2</div></emu-eqn>
+  <emu-eqn aoid="Value"><div>Value(<var>t</var>)</div><div>    = DateValue(<var>t</var>) if <emu-xref aoid="Type" id="_ref_2"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>    = <var>t</var></div></emu-eqn>
+  <emu-alg><ol><li>Return <emu-xref aoid="Value" id="_ref_3"><a href="example.html#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></emu-alg>
+  <p>Inline eqns are a thing, for example <emu-eqn class="inline">DateValue(n)</emu-eqn> or <emu-eqn class="inline">1 + 1 = 2</emu-eqn></p>
+</emu-clause></div></body>
