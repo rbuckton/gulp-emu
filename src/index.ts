@@ -16,35 +16,30 @@
 
 import { AsyncCountdownEvent } from "@esfx/async-countdown";
 import { AsyncQueue } from "@esfx/async-queue";
-import * as emu from "ecmarkup";
 import * as fs from "fs";
 import * as path from "path";
-import * as semver from "semver";
 import { Transform } from "stream";
 import { EcmarkupModule, getEcmarkupModule } from "./ecmarkupModule";
 import PluginError = require("plugin-error");
 import Vinyl = require("vinyl");
-
-const ecmarkupVersion = require("ecmarkup/package.json").version as string;
-const ecmarkupMode = semver.satisfies(ecmarkupVersion, ">= 7.0.0") ? "v7" : "v3";
 
 function ecmarkup(opts?: ecmarkup.Options): NodeJS.ReadWriteStream {
     return new ecmarkup.EcmarkupTransform(opts);
 }
 
 // v3.0 - v6.1
-interface SinglePageSpec extends Omit<emu.Spec, "toHTML" | "generatedFiles"> {
+interface SinglePageSpec extends Omit<import("ecmarkup").Spec, "toHTML" | "generatedFiles"> {
     toHTML(): string;
 }
 
 // v7.0+
-interface MultiPageSpec extends Omit<emu.Spec, "toHTML" | "generatedFiles"> {
+interface MultiPageSpec extends Omit<import("ecmarkup").Spec, "toHTML" | "generatedFiles"> {
     toHTML?(): string;
     generatedFiles: Map<string | null, string>;
 }
 
 namespace ecmarkup {
-    export interface Options extends Omit<emu.Options, "jsOut" | "cssOut" | "outfile" | "watch"> {
+    export interface Options extends Omit<import("ecmarkup").Options, "jsOut" | "cssOut" | "outfile" | "watch"> {
         js?: boolean | string;
         css?: boolean | string;
         biblio?: boolean;
@@ -52,7 +47,7 @@ namespace ecmarkup {
 
     export class EcmarkupTransform extends Transform {
         private _opts: Required<Pick<Options, "js" | "css" | "biblio">>;
-        private _emuOpts: emu.Options;
+        private _emuOpts: import("ecmarkup").Options;
         private _queue = new AsyncQueue<Vinyl[]>();
         private _countdown = new AsyncCountdownEvent(1);
         private _cache = new Map<string, string>();
@@ -61,8 +56,8 @@ namespace ecmarkup {
         constructor(opts: Options = {}) {
             super({ objectMode: true });
             this._opts = {
-                js: pluck(opts, "js") ?? pluck(opts as emu.Options, "jsOut") ?? false,
-                css: pluck(opts, "css") ?? pluck(opts as emu.Options, "cssOut") ?? false,
+                js: pluck(opts, "js") ?? pluck(opts as import("ecmarkup").Options, "jsOut") ?? false,
+                css: pluck(opts, "css") ?? pluck(opts as import("ecmarkup").Options, "cssOut") ?? false,
                 biblio: pluck(opts, "biblio") ?? false,
             };
             this._emuOpts = { ...opts };
@@ -108,6 +103,10 @@ namespace ecmarkup {
             }
 
             this._waitForWrite();
+        }
+
+        get ecmarkupVersion() {
+            return this._ecmarkup.version;
         }
 
         _write(file: Vinyl, enc: string, cb: () => void): void {
@@ -202,7 +201,7 @@ namespace ecmarkup {
                     const biblio = new Vinyl({
                         path: path.join(dirname, basename + ".biblio.json"),
                         base: file.base,
-                        contents: Buffer.from(JSON.stringify(spec.exportBiblio()), "utf8")
+                        contents: Buffer.from(JSON.stringify(spec.exportBiblio(), undefined, "  "), "utf8")
                     });
                     files.push(biblio);
                 }
@@ -274,11 +273,11 @@ function pluck<T, K extends keyof T>(obj: T, key: K) {
     return value;
 }
 
-function isSinglePageSpec(spec: Omit<emu.Spec, "toHTML" | "generatedFiles">): spec is SinglePageSpec {
+function isSinglePageSpec(spec: Omit<import("ecmarkup").Spec, "toHTML" | "generatedFiles">): spec is SinglePageSpec {
     return typeof (spec as SinglePageSpec).toHTML === "function";
 }
 
-function isMultiPageSpec(spec: Omit<emu.Spec, "toHTML" | "generatedFiles">): spec is MultiPageSpec {
+function isMultiPageSpec(spec: Omit<import("ecmarkup").Spec, "toHTML" | "generatedFiles">): spec is MultiPageSpec {
     return typeof (spec as MultiPageSpec).generatedFiles === "object";
 }
 

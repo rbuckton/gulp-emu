@@ -1,3 +1,7 @@
-[
-  "test.html"
-]
+{
+  "ecmarkupVersion": "8.1.0",
+  "mode": "v7",
+  "files": [
+    "test.html"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "ecmarkupVersion": "5.0.0",
+  "mode": "v3",
+  "files": [
+    "elements.css",
+    "findLocalReferences.js",
+    "menu.js",
+    "test.biblio.json",
+    "test.html"
+  ]
+}

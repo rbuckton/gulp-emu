@@ -1,0 +1,9 @@
+{
+  "ecmarkupVersion": "3.25.3",
+  "mode": "v3",
+  "files": [
+    "ecmarkup.css",
+    "ecmarkup.js",
+    "test.html"
+  ]
+}

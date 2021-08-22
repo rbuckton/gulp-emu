@@ -1,0 +1,53 @@
+{
+  "<no location>": [
+    {
+      "type": "op",
+      "aoid": "Value2",
+      "refId": "sec-example",
+      "namespace": "<no location>",
+      "location": "",
+      "referencingIds": []
+    },
+    {
+      "type": "op",
+      "aoid": "DateValue",
+      "refId": "sec-example",
+      "namespace": "<no location>",
+      "location": "",
+      "referencingIds": []
+    },
+    {
+      "type": "op",
+      "aoid": "Value",
+      "refId": "sec-example",
+      "namespace": "<no location>",
+      "location": "",
+      "referencingIds": []
+    },
+    {
+      "type": "clause",
+      "id": "sec-example",
+      "aoid": null,
+      "title": "Header",
+      "titleHTML": "Header",
+      "number": "1",
+      "namespace": "<no location>",
+      "location": "",
+      "referencingIds": [
+        "_ref_0",
+        "_ref_3"
+      ]
+    },
+    {
+      "type": "clause",
+      "id": "sec-copyright-and-software-license",
+      "aoid": null,
+      "title": "Copyright & Software License",
+      "titleHTML": "Copyright &amp; Software License",
+      "number": "A",
+      "namespace": "<no location>",
+      "location": "",
+      "referencingIds": []
+    }
+  ]
+}

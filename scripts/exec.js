@@ -1,6 +1,6 @@
 // @ts-check
 const { spawn } = require("child_process");
-const { default: chalk } = require("chalk");
+const chalk = require("chalk");
 const { Cancelable, CancelError } = require("@esfx/cancelable");
 const log = require("fancy-log");
 const isWindows = /^win/.test(process.platform);

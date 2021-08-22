@@ -19,34 +19,44 @@ import * as path from "path";
 
 /* @internal */
 export interface EcmarkupModule {
-    readonly module: typeof import("ecmarkup");
-    readonly mode: "v7" | "v3";
     readonly path: string;
+    readonly version: string;
+    readonly mode: "v7" | "v3";
+    readonly module: typeof import("ecmarkup");
 }
 
-const ecmarkupModule: EcmarkupModule = {
-    path: path.dirname(require.resolve("ecmarkup/package.json")),
-    mode: semver.satisfies(require("ecmarkup/package.json").version, ">= 7.0.0") ? "v7" : "v3",
-    module: require("ecmarkup"),
-};
+interface PackageJson {
+    name: string;
+    version: string;
+}
+
+function resolveEcmarkupModule(packagePath: string): EcmarkupModule {
+    if (!path.isAbsolute(packagePath) || path.basename(packagePath) !== "package.json") {
+        throw new TypeError("Expected an absolute path to 'package.json'")
+    }
+    const packageJson = require(packagePath) as PackageJson;
+    if (packageJson.name !== "ecmarkup") {
+        throw new Error("Invalid ecmarkup package reference.");
+    }
+    const pathname = path.dirname(packagePath);
+    const version = packageJson.version;
+    const mode = semver.satisfies(version, ">= 7.0.0") ? "v7" : "v3";
+    const module = require(pathname);
+    return {
+        path: pathname,
+        version,
+        mode,
+        module
+    };
+}
+
+const ecmarkupModule = resolveEcmarkupModule(require.resolve("ecmarkup/package.json"));
 
 let currentEcmarkupModule = ecmarkupModule;
 
 /* @internal */
 export function setEcmarkup(packagePath: string | undefined) {
-    if (packagePath) {
-        if (!path.isAbsolute(packagePath) || path.basename(packagePath) !== "package.json") {
-            throw new TypeError("Expected an absolute path to 'package.json'")
-        }
-        currentEcmarkupModule = {
-            path: path.dirname(packagePath),
-            mode: semver.satisfies(require(packagePath).version, ">= 7.0.0") ? "v7" : "v3",
-            module: require(path.dirname(packagePath)) as typeof import("ecmarkup"),
-        };
-    }
-    else {
-        currentEcmarkupModule = ecmarkupModule;
-    }
+    currentEcmarkupModule = packagePath ? resolveEcmarkupModule(packagePath) : ecmarkupModule;
 }
 
 /* @internal */

@@ -1,5 +1,6 @@
 <!doctype html>
-<head><meta charset="utf-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/base16/solarized-light.min.css"><link rel="stylesheet" href="./css/elements.css">
+<head>
+  <meta charset="utf-8">
 <script>'use strict';
 let sdoBox = {
   init() {
@@ -1109,8 +1110,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 let sdoMap = JSON.parse(`{}`);
-let biblio = JSON.parse(`{"refsByClause":{"sec-example":["_ref_0","_ref_1","_ref_2","_ref_3","_ref_4","_ref_5","_ref_6","_ref_7","_ref_8","_ref_9"]},"entries":[{"type":"op","aoid":"Value2","refId":"sec-example","referencingIds":[],"key":"Value2"},{"type":"op","aoid":"DateValue","refId":"sec-example","referencingIds":[],"key":"DateValue"},{"type":"op","aoid":"Value","refId":"sec-example","referencingIds":[],"key":"Value"},{"type":"clause","id":"sec-example","aoid":null,"titleHTML":"<span class=\\"secnum\\">1</span>Header<span class=\\"utils\\"><span class=\\"anchor\\">#</span></span>","number":"1","referencingIds":["_ref_0","_ref_1","_ref_2","_ref_4","_ref_5","_ref_6","_ref_8","_ref_9"],"key":"1Header#"},{"type":"clause","id":"sec-copyright-and-software-license","aoid":null,"titleHTML":"Copyright &amp; Software License","number":"A","referencingIds":[],"key":"Copyright & Software License"}]}`);
-;let usesMultipage = false</script><style>body {
+let biblio = JSON.parse(`{"refsByClause":{"sec-example":["_ref_0","_ref_1","_ref_2","_ref_3"]},"entries":[{"type":"op","aoid":"Value2","refId":"sec-example","referencingIds":[],"key":"Value2"},{"type":"op","aoid":"DateValue","refId":"sec-example","referencingIds":[],"key":"DateValue"},{"type":"op","aoid":"Value","refId":"sec-example","referencingIds":[],"key":"Value"},{"type":"clause","id":"sec-example","aoid":null,"titleHTML":"Header","number":"1","referencingIds":["_ref_0","_ref_3"],"key":"Header"},{"type":"clause","id":"sec-copyright-and-software-license","aoid":null,"titleHTML":"Copyright &amp; Software License","number":"A","referencingIds":[],"key":"Copyright & Software License"}]}`);
+;let usesMultipage = false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/base16/solarized-light.min.css"><style>body {
   display: flex;
   font-size: 18px;
   line-height: 1.5;
@@ -2287,12 +2288,17 @@ li.menu-search-result-term:before {
 .clause-attributes-tag a {
   color: #884400;
 }
-</style></head><body><div id="menu-toggle">☰</div><div id="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-example" title="1Header#"><span class="secnum">1</span> <span class="secnum">1</span>Header<span class="utils"><span class="anchor">#</span></span></a></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container"><emu-clause id="sec-example">
-  <h1><span class="secnum">1</span> <span class="secnum">1</span>Header<span class="utils"><span class="anchor"><a href="#sec-example">#</a></span></span></h1>
+</style></head>
+<body><div id="menu-toggle">☰</div><div id="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-example" title="Header"><span class="secnum">1</span> Header</a></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container">
+<emu-clause id="sec-example">
+  <h1><span class="secnum">1</span> Header</h1>
   <p>Can refer to eqns inside paragraph text via autolinking: DateValue.</p>
-  <emu-alg>#### ECMARKDOWN PARSE FAILED ####<pre><emu-alg>#### ECMARKDOWN PARSE FAILED ####<pre><ol><li>Return <emu-xref aoid="Value" id="_ref_0"><a href="#sec-example"></a><a href="#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></pre></emu-alg>  </pre></emu-alg>
-  <emu-eqn aoid="Value2"><div><div>    <emu-xref aoid="Value2" id="_ref_1"><a href="#sec-example"></a><a href="#sec-example">Value2</a></emu-xref>(<var>t</var>)</div><div>      = <emu-xref aoid="DateValue" id="_ref_2"><a href="#sec-example"></a><a href="#sec-example">DateValue</a></emu-xref>(<var>t</var>) if <emu-xref aoid="Type" id="_ref_3"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values"></a><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>      = <var>t</var></div></div></emu-eqn>  <emu-eqn aoid="DateValue"><div><div>    <emu-xref aoid="DateValue" id="_ref_4"><a href="#sec-example"></a><a href="#sec-example">DateValue</a></emu-xref>(t)</div><div>      = 0 if <var>t</var> = 0</div><div>      = 1 if <var>t</var> = 1</div><div>      = 2</div></div></emu-eqn>  <emu-eqn aoid="Value"><div><div>    <emu-xref aoid="Value" id="_ref_5"><a href="#sec-example"></a><a href="#sec-example">Value</a></emu-xref>(<var>t</var>)</div><div>      = <emu-xref aoid="DateValue" id="_ref_6"><a href="#sec-example"></a><a href="#sec-example">DateValue</a></emu-xref>(<var>t</var>) if <emu-xref aoid="Type" id="_ref_7"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values"></a><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>      = <var>t</var></div></div></emu-eqn>  <emu-alg>#### ECMARKDOWN PARSE FAILED ####<pre><emu-alg>#### ECMARKDOWN PARSE FAILED ####<pre><ol><li>Return <emu-xref aoid="Value" id="_ref_8"><a href="#sec-example"></a><a href="#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></pre></emu-alg>  </pre></emu-alg>
-  <p>Inline eqns are a thing, for example <emu-eqn class="inline"><emu-xref aoid="DateValue" id="_ref_9"><a href="#sec-example"></a><a href="#sec-example">DateValue</a></emu-xref>(n)</emu-eqn> or <emu-eqn class="inline">1 + 1 = 2</emu-eqn></p>
+  <emu-alg><ol><li>Return <emu-xref aoid="Value" id="_ref_0"><a href="#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></emu-alg>
+  <emu-eqn aoid="Value2"><div>Value2(<var>t</var>)</div><div>    = DateValue(<var>t</var>) if <emu-xref aoid="Type" id="_ref_1"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>    = <var>t</var></div></emu-eqn>
+  <emu-eqn aoid="DateValue"><div>DateValue(<var>t</var>)</div><div>    = 0 if <var>t</var> = 0</div><div>    = 1 if <var>t</var> = 1</div><div>    = 2</div></emu-eqn>
+  <emu-eqn aoid="Value"><div>Value(<var>t</var>)</div><div>    = DateValue(<var>t</var>) if <emu-xref aoid="Type" id="_ref_2"><a href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>t</var>) is string</div><div>    = <var>t</var></div></emu-eqn>
+  <emu-alg><ol><li>Return <emu-xref aoid="Value" id="_ref_3"><a href="#sec-example">Value</a></emu-xref>(<var>val</var>);</li></ol></emu-alg>
+  <p>Inline eqns are a thing, for example <emu-eqn class="inline">DateValue(n)</emu-eqn> or <emu-eqn class="inline">1 + 1 = 2</emu-eqn></p>
 </emu-clause><emu-annex id="sec-copyright-and-software-license">
       <h1><span class="secnum">A</span> Copyright &amp; Software License</h1>
       

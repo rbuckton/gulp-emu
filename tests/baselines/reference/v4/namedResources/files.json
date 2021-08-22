@@ -1,5 +1,9 @@
-[
-  "ecmarkup.css",
-  "ecmarkup.js",
-  "test.html"
-]
+{
+  "ecmarkupVersion": "4.2.3",
+  "mode": "v3",
+  "files": [
+    "ecmarkup.css",
+    "ecmarkup.js",
+    "test.html"
+  ]
+}

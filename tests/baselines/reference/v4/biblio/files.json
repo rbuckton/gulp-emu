@@ -1,4 +1,8 @@
-[
-  "test.biblio.json",
-  "test.html"
-]
+{
+  "ecmarkupVersion": "4.2.3",
+  "mode": "v3",
+  "files": [
+    "test.biblio.json",
+    "test.html"
+  ]
+}

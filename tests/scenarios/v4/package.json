@@ -1,7 +1,0 @@
-{
-    "name": "gulp-emu-tests-v4",
-    "private": true,
-    "devDependencies": {
-        "ecmarkup": "^4.1.1"
-    }
-}

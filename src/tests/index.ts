@@ -1,14 +1,19 @@
 /// <reference types="mocha" />
+import { Deferred } from "@esfx/async-deferred";
+import { assert, use } from "chai";
+import { chaiBaseline } from "chai-baseline";
+import * as events from "events";
 import * as fs from "fs";
 import * as path from "path";
-import * as events from "events";
-import { use, assert } from "chai";
-import { chaiBaseline } from "chai-baseline";
+import { getEcmarkupModule, setEcmarkup } from "../ecmarkupModule";
 import emu = require("../index");
 import File = require("vinyl");
-import * as child_process from "child_process";
-import { Deferred } from "@esfx/async-deferred";
-import { setEcmarkup } from "../ecmarkupModule";
+
+// preload each ecmarkup version we're testing against
+import "ecmarkup-v4";
+import "ecmarkup-v7";
+import "ecmarkup-v8";
+import "ecmarkup-v9";
 
 use(chaiBaseline);
 
@@ -17,33 +22,30 @@ describe("scenario", () => {
     const baselinesdir = path.join(testsdir, "baselines");
     const scenariosdir = path.join(testsdir, "scenarios");
     for (const version of fs.readdirSync(scenariosdir)) {
-        describe(version, () => {
+        describe(version, function () {
+            this.timeout(10_000);
             const versiondir = path.join(scenariosdir, version);
-            const packageJson = path.join(versiondir, "package.json");
-            if (fs.existsSync(packageJson)) {
-                before(async function () {
-                    this.timeout(30_000);
-                    const installDeferred = new Deferred<void>();
-                    child_process.exec(`npm install --no-package-lock`, { cwd: versiondir }, installDeferred.callback);
-                    await installDeferred.promise;
-                    try { fs.mkdirSync(path.join(baselinesdir, "local", version), { recursive: true }); } catch { }
-                });
+            const setupJs = path.join(versiondir, "setup.js");
+            if (fs.existsSync(setupJs)) {
+                const setup = require(setupJs) as (setEcmarkup_: typeof setEcmarkup) => void;
+                beforeEach(() => setup(setEcmarkup));
+                afterEach(() => setEcmarkup(undefined));
             }
+
             for (const name of fs.readdirSync(versiondir)) {
                 if (name === "node_modules") continue;
                 const scenariodir = path.join(versiondir, name);
                 const build = path.join(scenariodir, "build.js");
                 if (fs.existsSync(build)) {
-                    beforeEach(() => setEcmarkup(undefined));
-                    afterEach(() => setEcmarkup(undefined));
                     it(name, async function () {
-                        this.timeout(30_000);
                         let ended = false;
                         const deferred = new Deferred<void>();
                         const files: string[] = [];
                         const participants: PromiseLike<void>[] = [];
-                        const scenario = require(build) as (emu_: typeof emu, setEcmarkup_: typeof setEcmarkup) => events.EventEmitter;
-                        const stream = scenario(emu, setEcmarkup);
+                        const ecmarkupVersion = getEcmarkupModule().version;
+                        const gulpEmuMode = getEcmarkupModule().mode;
+                        const scenario = require(build) as (emu_: typeof emu) => events.EventEmitter;
+                        const stream = scenario(emu);
                         stream.on("data", (file: File) => {
                             const basename = path.basename(file.relative);
                             const relativedir = path.normalize(path.dirname(file.relative))
@@ -54,7 +56,6 @@ describe("scenario", () => {
                             const relative = path.join(version, name, relativedir, basename);
                             participants.push(assert.baseline(contents, relative, { base: baselinesdir }));
                         });
-
                         stream.on("error", deferred.reject);
                         stream.on("close", onend);
                         stream.on("end", onend);
@@ -64,7 +65,13 @@ describe("scenario", () => {
                         function onend() {
                             if (ended) return;
                             ended = true;
-                            participants.push(assert.baseline(JSON.stringify(files.sort(), undefined, "  "), path.join(version, name, "files.json"), { base: baselinesdir }));
+                            const summary = {
+                                ecmarkupVersion: ecmarkupVersion,
+                                mode: gulpEmuMode,
+                                files: files.sort()
+                            };
+                            const summaryText = JSON.stringify(summary, undefined, "  ");
+                            participants.push(assert.baseline(summaryText, path.join(version, name, "files.json"), { base: baselinesdir }));
                             Promise.any(participants).then(
                                 deferred.resolve,
                                 e => e instanceof AggregateError ?

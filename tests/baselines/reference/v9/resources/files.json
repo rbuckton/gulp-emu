@@ -1,0 +1,10 @@
+{
+  "ecmarkupVersion": "9.0.0",
+  "mode": "v7",
+  "files": [
+    "ecmarkup.css",
+    "ecmarkup.js",
+    "test.biblio.json",
+    "test.html"
+  ]
+}

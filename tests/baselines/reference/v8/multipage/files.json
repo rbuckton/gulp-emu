@@ -1,9 +1,13 @@
-[
-  "ecmarkup.css",
-  "ecmarkup.js",
-  "index.html",
-  "multipage\\copyright-and-software-license.html",
-  "multipage\\example.html",
-  "multipage\\index.html",
-  "multipage\\multipage.js"
-]
+{
+  "ecmarkupVersion": "8.1.0",
+  "mode": "v7",
+  "files": [
+    "ecmarkup.css",
+    "ecmarkup.js",
+    "index.html",
+    "multipage\\copyright-and-software-license.html",
+    "multipage\\example.html",
+    "multipage\\index.html",
+    "multipage\\multipage.js"
+  ]
+}
