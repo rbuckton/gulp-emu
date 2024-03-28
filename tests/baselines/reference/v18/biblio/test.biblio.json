@@ -1,0 +1,42 @@
+{
+  "location": "<no location>",
+  "entries": [
+    {
+      "type": "op",
+      "aoid": "Value2",
+      "refId": "sec-example",
+      "signature": null,
+      "effects": []
+    },
+    {
+      "type": "op",
+      "aoid": "DateValue",
+      "refId": "sec-example",
+      "signature": null,
+      "effects": []
+    },
+    {
+      "type": "op",
+      "aoid": "Value",
+      "refId": "sec-example",
+      "signature": null,
+      "effects": []
+    },
+    {
+      "type": "clause",
+      "id": "sec-example",
+      "aoid": null,
+      "title": "Header",
+      "titleHTML": "Header",
+      "number": "1"
+    },
+    {
+      "type": "clause",
+      "id": "sec-copyright-and-software-license",
+      "aoid": null,
+      "title": "Copyright & Software License",
+      "titleHTML": "Copyright &amp; Software License",
+      "number": "A"
+    }
+  ]
+}

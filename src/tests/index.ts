@@ -14,6 +14,8 @@ import "ecmarkup-v4";
 import "ecmarkup-v7";
 import "ecmarkup-v8";
 import "ecmarkup-v9";
+import "ecmarkup-v17";
+import "ecmarkup-v18";
 
 use(chaiBaseline);
 

@@ -1,0 +1,23 @@
+{
+  "ecmarkupVersion": "18.3.1",
+  "mode": "v18",
+  "files": [
+    "assets\\IBMPlexMono-Bold-SlashedZero.woff2",
+    "assets\\IBMPlexMono-BoldItalic-SlashedZero.woff2",
+    "assets\\IBMPlexMono-Italic-SlashedZero.woff2",
+    "assets\\IBMPlexMono-Regular-SlashedZero.woff2",
+    "assets\\IBMPlexSans-Bold-SlashedZero.woff2",
+    "assets\\IBMPlexSans-BoldItalic-SlashedZero.woff2",
+    "assets\\IBMPlexSans-Italic-SlashedZero.woff2",
+    "assets\\IBMPlexSans-Regular-SlashedZero.woff2",
+    "assets\\IBMPlexSerif-Bold-SlashedZero.woff2",
+    "assets\\IBMPlexSerif-BoldItalic-SlashedZero.woff2",
+    "assets\\IBMPlexSerif-Italic-SlashedZero.woff2",
+    "assets\\IBMPlexSerif-Regular-SlashedZero.woff2",
+    "assets\\ecma-header.png",
+    "assets\\ecmarkup.css",
+    "assets\\ecmarkup.js",
+    "assets\\print.css",
+    "test.html"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "ecmarkupVersion": "17.1.1",
+  "mode": "v7",
+  "files": [
+    "ecmarkup.css",
+    "ecmarkup.js",
+    "index.html",
+    "multipage\\copyright-and-software-license.html",
+    "multipage\\example.html",
+    "multipage\\index.html",
+    "multipage\\multipage.js"
+  ]
+}

@@ -21,7 +21,7 @@ import * as path from "path";
 export interface EcmarkupModule {
     readonly path: string;
     readonly version: string;
-    readonly mode: "v7" | "v3";
+    readonly mode: "v7" | "v3" | "v18";
     readonly module: typeof import("ecmarkup");
 }
 
@@ -40,7 +40,10 @@ function resolveEcmarkupModule(packagePath: string): EcmarkupModule {
     }
     const pathname = path.dirname(packagePath);
     const version = packageJson.version;
-    const mode = semver.satisfies(version, ">= 7.0.0") ? "v7" : "v3";
+    const mode =
+        semver.satisfies(version, ">= 18.0.0") ? "v18" :
+        semver.satisfies(version, ">= 7.0.0") ? "v7" :
+        "v3";
     const module = require(pathname);
     return {
         path: pathname,

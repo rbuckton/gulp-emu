@@ -22,6 +22,9 @@ import { Transform } from "stream";
 import { EcmarkupModule, getEcmarkupModule } from "./ecmarkupModule";
 import PluginError = require("plugin-error");
 import Vinyl = require("vinyl");
+import type { Options as OptionsV18 } from "ecmarkup-v18";
+import type { Options as OptionsV7 } from "ecmarkup-v7";
+import type { Options as OptionsV3 } from "ecmarkup-v3";
 
 function ecmarkup(opts?: ecmarkup.Options): NodeJS.ReadWriteStream {
     return new ecmarkup.EcmarkupTransform(opts);
@@ -38,16 +41,23 @@ interface MultiPageSpec extends Omit<import("ecmarkup").Spec, "toHTML" | "genera
     generatedFiles: Map<string | null, string>;
 }
 
+type EmuOptions =
+    & Omit<OptionsV18, "jsOut" | "cssOut"> 
+    & OptionsV7
+    & OptionsV3
+    ;
+
 namespace ecmarkup {
     export interface Options extends Omit<import("ecmarkup").Options, "jsOut" | "cssOut" | "outfile" | "watch"> {
         js?: boolean | string;
         css?: boolean | string;
+        assetsDir?: string;
         biblio?: boolean;
     }
 
     export class EcmarkupTransform extends Transform {
-        private _opts: Required<Pick<Options, "js" | "css" | "biblio">>;
-        private _emuOpts: import("ecmarkup").Options;
+        private _opts: Required<Pick<Options, "js" | "css" | "biblio" | "assetsDir">>;
+        private _emuOpts: EmuOptions;
         private _queue = new AsyncQueue<Vinyl[]>();
         private _countdown = new AsyncCountdownEvent(1);
         private _cache = new Map<string, string>();
@@ -56,14 +66,16 @@ namespace ecmarkup {
         constructor(opts: Options = {}) {
             super({ objectMode: true });
             this._opts = {
-                js: pluck(opts, "js") ?? pluck(opts as import("ecmarkup").Options, "jsOut") ?? false,
-                css: pluck(opts, "css") ?? pluck(opts as import("ecmarkup").Options, "cssOut") ?? false,
+                js: pluck(opts, "js") ?? pluck(opts as OptionsV7, "jsOut") ?? false,
+                css: pluck(opts, "css") ?? pluck(opts as OptionsV7, "cssOut") ?? false,
                 biblio: pluck(opts, "biblio") ?? false,
+                assetsDir: pluck(opts, "assetsDir")!,
             };
             this._emuOpts = { ...opts };
             delete this._emuOpts.outfile;
             delete this._emuOpts.cssOut;
             delete this._emuOpts.jsOut;
+            delete this._emuOpts.assetsDir;
 
             if (this._emuOpts.multipage) {
                 if (this._opts.js) {
@@ -75,6 +87,21 @@ namespace ecmarkup {
             }
 
             switch (this._ecmarkup.mode) {
+                case "v18":
+                    // ecmarkup v18 removes `jsOut` & `cssOut` in favor of `assetsDir`
+                    if (this._opts.js) {
+                        throw new Error(`Cannot use 'js' or 'jsOut' option with ecmarkup@v18 or later. Specify 'assets: "external"' and use 'assetsDir' instead.`);
+                    }
+
+                    if (this._opts.css) {
+                        throw new Error(`Cannot use 'css' or 'cssOut' option with ecmarkup@v18 or later. Specify 'assets: "external"' and use 'assetsDir' instead.`);
+                    }
+
+                    if (this._emuOpts.multipage) {
+                        this._emuOpts.outfile = "";
+                    }
+                    break;
+
                 case "v7":
                     // ecmarkup v7 adds js and css outputs to `generatedFiles`
                     if (this._emuOpts.multipage) {
@@ -87,12 +114,18 @@ namespace ecmarkup {
                     else if (this._opts.js) {
                         this._emuOpts.jsOut = "ecmarkup.js";
                     }
+                    else if (this._opts.assetsDir) {
+                        this._emuOpts.jsOut = path.join(this._opts.assetsDir, "ecmarkup.js");
+                    }
 
                     if (typeof this._opts.css === "string") {
                         this._emuOpts.cssOut = this._opts.css;
                     }
                     else if (this._opts.css) {
                         this._emuOpts.cssOut = "ecmarkup.css";
+                    }
+                    else if (this._opts.assetsDir) {
+                        this._emuOpts.cssOut = path.join(this._opts.assetsDir, "ecmarkup.css");
                     }
                     break;
                 case "v3":
@@ -128,35 +161,37 @@ namespace ecmarkup {
         }
 
         _flush(cb: () => void) {
-            if (this._ecmarkup.mode !== "v7") {
-                const files: { src: string[], dest: string }[] = [];
+            switch (this._ecmarkup.mode) {
+                case "v3": {
+                    const files: { src: string[], dest: string }[] = [];
 
-                // add extra files
-                const css = this._opts.css;
-                if (css) {
-                    const dest = typeof css === "string" ? css : "elements.css";
-                    files.push({ src: [path.join(this._ecmarkup.path, "css/elements.css")], dest });
-                }
-
-                const js = this._opts.js;
-                if (js) {
-                    if (typeof js === "string") {
-                        files.push({
-                            src: [
-                                path.join(this._ecmarkup.path, "js/menu.js"),
-                                path.join(this._ecmarkup.path, "js/findLocalReferences.js")
-                            ],
-                            dest: js
-                        });
+                    // add extra files
+                    const css = this._opts.css;
+                    if (css) {
+                        const dest = typeof css === "string" ? css : "elements.css";
+                        files.push({ src: [path.join(this._ecmarkup.path, "css/elements.css")], dest });
                     }
-                    else {
-                        files.push({ src: [path.join(this._ecmarkup.path, "js/menu.js")], dest: "menu.js" });
-                        files.push({ src: [path.join(this._ecmarkup.path, "js/findLocalReferences.js")], dest: "findLocalReferences.js" });
-                    }
-                }
 
-                if (files.length) {
-                    this._enqueue(this._readFilesAsync(files));
+                    const js = this._opts.js;
+                    if (js) {
+                        if (typeof js === "string") {
+                            files.push({
+                                src: [
+                                    path.join(this._ecmarkup.path, "js/menu.js"),
+                                    path.join(this._ecmarkup.path, "js/findLocalReferences.js")
+                                ],
+                                dest: js
+                            });
+                        }
+                        else {
+                            files.push({ src: [path.join(this._ecmarkup.path, "js/menu.js")], dest: "menu.js" });
+                            files.push({ src: [path.join(this._ecmarkup.path, "js/findLocalReferences.js")], dest: "findLocalReferences.js" });
+                        }
+                    }
+
+                    if (files.length) {
+                        this._enqueue(this._readFilesAsync(files));
+                    }
                 }
             }
 
@@ -192,7 +227,7 @@ namespace ecmarkup {
             opts.warn ??= err => {
                 console.warn(err.message);
             };
-            const spec = await this._ecmarkup.module.build(file.path, path => this._readFileAsync(path), this._emuOpts);
+            const spec = await this._ecmarkup.module.build(file.path, path => this._readFileAsync(path), this._emuOpts as OptionsV18);
             if (spec) {
                 if (this._opts.biblio) {
                     const dirname = path.dirname(file.path);
@@ -207,6 +242,7 @@ namespace ecmarkup {
                 }
 
                 switch (this._ecmarkup.mode) {
+                    case "v18":
                     case "v7":
                         if (!isMultiPageSpec(spec)) throw new TypeError("Cannot read spec output.");
                         const dirname = path.dirname(file.path);
