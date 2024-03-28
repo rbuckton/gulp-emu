@@ -1,6 +1,6 @@
 {
   "name": "gulp-emu",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Gulp plugin for ecmarkup",
   "main": "out/index.js",
   "typings": "out/index.d.ts",
@@ -63,7 +63,7 @@
     "semver": "^7.3.5"
   },
   "peerDependencies": {
-    "ecmarkup": ">=3 <9 || ^9",
+    "ecmarkup": ">=3 <18 || ^18",
     "gulp": "^3 || ^4"
   },
   "engines": {
